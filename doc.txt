@@ -1,0 +1,21 @@
+CLIENT
+ESX.PlayerData = ESX.GetPlayerData()
+ESX.PlayerData.job2  
+ESX.PlayerData.job2.grade_name
+SERVER
+local xPlayer = ESX.GetPlayerFromId(source)
+xPlayer.job2.label 
+xPlayer.job2.grade_label
+xPlayer.getJob2()
+xPlayer.setJob2(name, grade)
+
+ALL THE THINGS YOU CAN DO WITH THE SECOND JOB SAME AS NORMAL JOB
+id	number	Job identifier id
+name	string	Job name
+label	string	Job label
+grade	number	Job grade
+grade_name	string	Grade name
+grade_label	string	Grade label
+grade_salary	number	Grade salary
+skin_male	table	Male skin
+skin_female	table	Female skin
