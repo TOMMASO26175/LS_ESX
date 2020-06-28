@@ -506,6 +506,8 @@ end)
 
 RegisterServerEvent('esx:useItem')
 AddEventHandler('esx:useItem', function(itemName)
+	print("USING")
+	print(itemName)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local count = xPlayer.getInventoryItem(itemName).count
 	

@@ -27,7 +27,7 @@ MySQL.ready(function()
 				weight = v.weight,
 				rare = v.rare,
 				canRemove = v.can_remove,
-				usable = ESX.UsableItemsCallbacks[vector3.name] ~= nil
+				usable = ESX.UsableItemsCallbacks[v.name] ~= nil
 			}
 		end
 	end)

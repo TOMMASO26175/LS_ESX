@@ -327,7 +327,6 @@ function CreateExtendedPlayer(player, accounts, inventory, job, job2, loadout, n
 	self.getItem = function (name)
 		if ESX.Items[name] then
 			do return ESX.Items[name] end
-			print("item in arrivo")
 		else
 			print("item non valido")
 		end
