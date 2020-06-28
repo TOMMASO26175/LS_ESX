@@ -46,68 +46,116 @@ AddEventHandler('es:playerLoaded', function(source, _player)
 		-- Get inventory
 		table.insert(tasks, function(cb)
 
-			MySQL.Async.fetchAll('SELECT item, count FROM user_inventory WHERE identifier = @identifier', {
+			MySQL.Async.fetchAll('SELECT data FROM disc_inventory WHERE owner = @identifier',{
 				['@identifier'] = player.getIdentifier()
-			}, function(inventory)
-				local tasks2, foundItems = {}, {}
+			},function (results)
+				for k,v in pairs(results) do
 
-				for k,v in ipairs(inventory) do
-					local item = ESX.Items[v.item]
+					for k1,v1 in pairs(v) do
+		
+						local obj = (json.decode(v1))
+		
+						for _,value in pairs(obj) do	--in base agli item fa il ciclo es slot 1,2,3 chiavi 1,2,3 e ognuna ha il valore
+							local item = value
+							local esxitem = ESX.Items[item.name]
 
-					if item then
-						foundItems[v.item] = true
+							if item then
+								
+								table.insert(userData.inventory, {
+									name = item.name,
+									count = item.count,
+									metadata = {},
+									label = esxitem.label,
+									weight = esxitem.weight,
+									usable = ESX.UsableItemsCallbacks[item.name] ~= nil,
+									rare = esxitem.rare,
+									canRemove = esxitem.canRemove
+								})
 
-						table.insert(userData.inventory, {
-							name = v.item,
-							count = v.count,
-							label = item.label,
-							weight = item.weight,
-							usable = ESX.UsableItemsCallbacks[v.item] ~= nil,
-							rare = item.rare,
-							canRemove = item.canRemove
-						})
-					else
-						print(('es_extended: invalid item "%s" ignored!'):format(v.item))
-					end
-				end
+							else
+								print('es_extended: invalid item  ignored!')
+							end
 
-				for itemName,item in pairs(ESX.Items) do
-					if not foundItems[itemName] then
-						table.insert(userData.inventory, {
-							name = itemName,
-							count = 0,
-							label = item.label,
-							weight = item.weight,
-							usable = ESX.UsableItemsCallbacks[itemName] ~= nil,
-							rare = item.rare,
-							canRemove = item.canRemove
-						})
+							-- for objk,objv in pairs(item) do
+							-- 	--VALUES OF THE JSON OBJ LIKE  COUNT NAME META
 
-						local scope = function(item, identifier)
-							table.insert(tasks2, function(cb2)
-								MySQL.Async.execute('INSERT INTO user_inventory (identifier, item, count) VALUES (@identifier, @item, @count)', {
-									['@identifier'] = identifier,
-									['@item'] = item,
-									['@count'] = 0
-								}, function(rowsChanged)
-									cb2()
-								end)
-							end)
+							-- 	-- if type(objv) == "table" then
+							-- 	-- 	print("TABLE:INSIDE:")
+							-- 	-- 	for dk,dv in pairs(objv) do
+							-- 	-- 		print(dk..":"..dv)
+							-- 	-- 	end
+							-- 	-- else
+							-- 	-- 	print(objk ..":"..objv)
+							-- 	-- end
+
+		
+							-- end
+		
 						end
-
-						scope(itemName, player.getIdentifier())
 					end
 				end
+			end)
 
-				Async.parallelLimit(tasks2, 5, function(results) end)
+			-- MySQL.Async.fetchAll('SELECT item, count FROM user_inventory WHERE identifier = @identifier', {
+			-- 	['@identifier'] = player.getIdentifier()
+			-- }, function(inventory)
+			-- 	local tasks2, foundItems = {}, {}
+
+			-- 	for k,v in ipairs(inventory) do
+			-- 		local item = ESX.Items[v.item]
+
+			-- 		if item then
+			-- 			foundItems[v.item] = true
+
+			-- 			table.insert(userData.inventory, {
+			-- 				name = v.item,
+			-- 				count = v.count,
+			-- 				label = item.label,
+			-- 				weight = item.weight,
+			-- 				usable = ESX.UsableItemsCallbacks[v.item] ~= nil,
+			-- 				rare = item.rare,
+			-- 				canRemove = item.canRemove
+			-- 			})
+			-- 		else
+			-- 			print(('es_extended: invalid item "%s" ignored!'):format(v.item))
+			-- 		end
+			-- 	end
+
+			-- 	for itemName,item in pairs(ESX.Items) do
+			-- 		if not foundItems[itemName] then
+			-- 			table.insert(userData.inventory, {
+			-- 				name = itemName,
+			-- 				count = 0,
+			-- 				label = item.label,
+			-- 				weight = item.weight,
+			-- 				usable = ESX.UsableItemsCallbacks[itemName] ~= nil,
+			-- 				rare = item.rare,
+			-- 				canRemove = item.canRemove
+			-- 			})
+
+			-- 			local scope = function(item, identifier)
+			-- 				table.insert(tasks2, function(cb2)
+			-- 					MySQL.Async.execute('INSERT INTO user_inventory (identifier, item, count) VALUES (@identifier, @item, @count)', {
+			-- 						['@identifier'] = identifier,
+			-- 						['@item'] = item,
+			-- 						['@count'] = 0
+			-- 					}, function(rowsChanged)
+			-- 						cb2()
+			-- 					end)
+			-- 				end)
+			-- 			end
+
+			-- 			scope(itemName, player.getIdentifier())
+			-- 		end
+			-- 	end
+
+				--Async.parallelLimit(tasks2, 5, function(results) end)
 
 				table.sort(userData.inventory, function(a,b)
 					return a.label < b.label
 				end)
 
 				cb()
-			end)
-
 		end)
 
 		-- Get job and loadout

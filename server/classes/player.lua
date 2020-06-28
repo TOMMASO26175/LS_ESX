@@ -324,8 +324,24 @@ function CreateExtendedPlayer(player, accounts, inventory, job, job2, loadout, n
 		end
 	end
 
+	self.getItem = function (name)
+		if ESX.Items[name] then
+			do return ESX.Items[name] end
+			print("item in arrivo")
+		else
+			print("item non valido")
+		end
+	end
+
 	self.addInventoryItem = function(name, count)
 		local item     = self.getInventoryItem(name)
+		if item == nil then
+			item = self.getItem(name)
+			item.count = 0
+			item.metadata = {}
+			item.usable = ESX.UsableItemsCallbacks[name] ~= nil
+		end
+		print(item)
 		local newCount = item.count + count
 		item.count     = newCount
 

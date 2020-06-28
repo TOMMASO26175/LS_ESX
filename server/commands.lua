@@ -175,7 +175,7 @@ TriggerEvent('es:addGroupCommand', 'giveitem', 'admin', function(source, args, u
 	local count   = (args[3] == nil and 1 or tonumber(args[3]))
 
 	if count ~= nil then
-		if xPlayer.getInventoryItem(item) ~= nil then
+		if xPlayer.getItem(item) ~= nil then
 			xPlayer.addInventoryItem(item, count)
 		else
 			TriggerClientEvent('esx:showNotification', _source, _U('invalid_item'))

@@ -22,10 +22,12 @@ MySQL.ready(function()
 	MySQL.Async.fetchAll('SELECT * FROM items', {}, function(result)
 		for k,v in ipairs(result) do
 			ESX.Items[v.name] = {
+				name = v.name,
 				label = v.label,
 				weight = v.weight,
 				rare = v.rare,
-				canRemove = v.can_remove
+				canRemove = v.can_remove,
+				usable = ESX.UsableItemsCallbacks[vector3.name] ~= nil
 			}
 		end
 	end)
