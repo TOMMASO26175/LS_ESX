@@ -169,6 +169,7 @@ AddEventHandler('esx:addInventoryItem', function(item, count)
 	end
 	--ES SLOTS 1,4,2
 	--ALREADY IN INV ITEMS
+		
 	for k,v in pairs(ESX.PlayerData.inventory) do
 		if v.name == item.name and next(v.metadata) == nil then	--NO META
 			ESX.PlayerData.inventory[k] = item
