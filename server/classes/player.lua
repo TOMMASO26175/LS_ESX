@@ -333,14 +333,11 @@ function CreateExtendedPlayer(player, accounts, inventory, job, job2, loadout, n
 	end
 
 	self.addInventoryItem = function(name, count)
-		local item     = self.getInventoryItem(name)
-		if item == nil then
-			item = self.getItem(name)
-			item.count = 0
-			item.metadata = {}
-			item.usable = ESX.UsableItemsCallbacks[name] ~= nil
-		end
-		print(item)
+		--local item     = self.getInventoryItem(name)
+		local item = self.getItem(name)
+		item.count = 0
+		item.metadata = {}
+		item.usable = ESX.UsableItemsCallbacks[name] ~= nil
 		local newCount = item.count + count
 		item.count     = newCount
 

@@ -55,13 +55,13 @@ AddEventHandler('es:playerLoaded', function(source, _player)
 		
 						local obj = (json.decode(v1))
 		
-						for _,value in pairs(obj) do	--in base agli item fa il ciclo es slot 1,2,3 chiavi 1,2,3 e ognuna ha il valore
+						for key,value in pairs(obj) do	--in base agli item fa il ciclo es slot 1,2,3 chiavi 1,2,3 e ognuna ha il valore
 							local item = value
 							local esxitem = ESX.Items[item.name]
 
 							if item then
 								
-								table.insert(userData.inventory, {
+								userData.inventory[key] = {
 									name = item.name,
 									count = item.count,
 									metadata = {},
@@ -70,7 +70,7 @@ AddEventHandler('es:playerLoaded', function(source, _player)
 									usable = ESX.UsableItemsCallbacks[item.name] ~= nil,
 									rare = esxitem.rare,
 									canRemove = esxitem.canRemove
-								})
+								}
 
 							else
 								print('es_extended: invalid item  ignored!')

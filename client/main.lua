@@ -162,12 +162,45 @@ end)
 
 RegisterNetEvent('esx:addInventoryItem')
 AddEventHandler('esx:addInventoryItem', function(item, count)
-	for k,v in ipairs(ESX.PlayerData.inventory) do
-		if v.name == item.name then
+	local added = false
+	local slots = {}
+	for k1,__ in pairs(ESX.PlayerData.inventory) do
+		table.insert(slots,k1)
+	end
+	--ES SLOTS 1,4,2
+	--ALREADY IN INV ITEMS
+	for k,v in pairs(ESX.PlayerData.inventory) do
+		if v.name == item.name and next(v.metadata) == nil then	--NO META
 			ESX.PlayerData.inventory[k] = item
+			added = true
+			break
+		elseif v.name == item.name and next(v.metadata) ~= nil then --YES META
+			local findempty = 1
+			for _,slotv in pairs(slots) do
+				if findempty == slotv then
+					findempty = findempty + 1
+				end
+			end
+			ESX.PlayerData.inventory[findempty] = item
+			added = true
 			break
 		end
 	end
+	--NEW ITEMS IN INV
+	if not added then
+		local findempty = 1
+		for _,slotv in pairs(slots) do
+			if findempty == slotv then
+				findempty = findempty + 1
+			end
+		end
+		ESX.PlayerData.inventory[findempty] = item
+	end
+
+	-- if v.name == item.name then
+	-- 	ESX.PlayerData.inventory[k] = item
+	-- 	newitem = false
+	-- end
 
 	ESX.UI.ShowInventoryItemNotification(true, item, count)
 
