@@ -164,9 +164,18 @@ RegisterNetEvent('esx:addInventoryItem')
 AddEventHandler('esx:addInventoryItem', function(item, count)
 	local added = false
 	local slots = {}
+	local index = 1
 	for k1,__ in pairs(ESX.PlayerData.inventory) do
-		table.insert(slots,k1)
+		--table.insert(slots,k1)
+		slots[index] = k1
+		index = index + 1
 	end
+	print("PRINTO INVENTARIO")
+	table.sort(slots)
+	for kk,vv in pairs(slots) do
+		print(kk..":"..vv)
+	end
+	print("FINE")
 	--ES SLOTS 1,4,2
 	--ALREADY IN INV ITEMS
 		
@@ -178,7 +187,7 @@ AddEventHandler('esx:addInventoryItem', function(item, count)
 		elseif v.name == item.name and next(v.metadata) ~= nil then --YES META
 			local findempty = 1
 			for _,slotv in pairs(slots) do
-				if findempty == slotv then
+				if findempty == tonumber(slotv) then
 					findempty = findempty + 1
 				end
 			end
@@ -191,10 +200,14 @@ AddEventHandler('esx:addInventoryItem', function(item, count)
 	if not added then
 		local findempty = 1
 		for _,slotv in pairs(slots) do
-			if findempty == slotv then
+			--print(type(slotv)..slotv)
+			--print(type(findempty)..findempty)
+			if tonumber(findempty) == tonumber(slotv) then
 				findempty = findempty + 1
+				--print("INCREMENTO")
 			end
 		end
+		--print("finale"..findempty)
 		ESX.PlayerData.inventory[findempty] = item
 	end
 
